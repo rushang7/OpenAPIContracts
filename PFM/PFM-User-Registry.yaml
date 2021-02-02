@@ -46,7 +46,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdateRequest'
+              $ref: '#/components/schemas/UserDeleteRequest'
       responses:
         '200': 
           description: User deleted successfully
@@ -63,7 +63,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdateRequest'
+              $ref: '#/components/schemas/UserDeleteRequest'
       responses:
         '200':
           description: User deactivated successfully
@@ -80,7 +80,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserSearchParams'
+              $ref: '#/components/schemas/UserSearchRequest'
       responses:
         '200':
           description: User Search Results
@@ -152,12 +152,43 @@ components:
             - required: 
               - uuid
               - tenantId
-    UserSearchParams:
+    UserDeleteRequest:
       type: object
-      allOf:
-        - $ref: '#/components/schemas/User'
-        - required:
-          - tenantId
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        user:
+          type: object
+          properties:
+            tenantId:
+              type: string
+            uuid: 
+              type: string
+          required:
+            - tenantId
+            - uuid
+    UserSearchRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        userSearchParams:
+          type: object
+          properties:
+            tenantId:
+              type: string
+            uuid:
+              type: string
+            pin: 
+              type: string
+            mobileNumber:
+              type: string
+            emailId:
+              type: string
+            aadharNumber:
+              type: string
+          required:
+            - tenantId
     UserResponse:
       type: object
       properties:
