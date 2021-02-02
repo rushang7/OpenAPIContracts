@@ -12,7 +12,7 @@ components:
     RequestHeader:
       type: object
       properties:
-        requesstMessageId:
+        requestMessageId:
           type: string
           format: uuid
         correlationId:
