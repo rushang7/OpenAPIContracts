@@ -12,18 +12,14 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/User'
-                - required:
-                  - username
-                  - tenantId
+              $ref: '#/components/schemas/UserCreateRequest'
       responses:
         '200':
           description: User created successfully 
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserResponse'
         '400':
           description: Error occurred while creating the user
   
@@ -33,17 +29,14 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/User'
-                - required:
-                  - userId
+              $ref: '#/components/schemas/UserUpdateRequest'
       responses:
         '200':
           description: User updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserResponse'
         '400':
           description: Error occurred while updating the user
   
@@ -53,13 +46,14 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/User'
-                - required:
-                  - userId
+              $ref: '#/components/schemas/UserUpdateRequest'
       responses:
         '200': 
           description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
         '400':
           description: Error occurred while deleting the user
   
@@ -69,13 +63,14 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/User'
-                - required:
-                  - userId
+              $ref: '#/components/schemas/UserUpdateRequest'
       responses:
         '200':
           description: User deactivated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
         '400':
           description: Error occurred while deactivating the user
           
@@ -85,19 +80,21 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/User'
-                - required:
-                  - tenantId
+              $ref: '#/components/schemas/UserSearchParams'
       responses:
         '200':
           description: User Search Results
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  responseHeader:
+                    $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/ResponseHeader'
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
             
 components:
   schemas:
@@ -107,12 +104,12 @@ components:
         tenantId:
           type: string
           example: 'in'
-        userId:
+        username:
+          type: string
+        uuid:
           type: string
           format: uuid
           example: 'abcd-wxyz'
-        username:
-          type: string
         pin:
           type: string
         mobileNumber:
@@ -131,3 +128,40 @@ components:
           items: 
             type: string
             example: 'Approver'
+    UserCreateRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        user:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - required: 
+              - username
+              - tenantId
+    UserUpdateRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        user:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/User'
+            - required: 
+              - uuid
+              - tenantId
+    UserSearchParams:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - required:
+          - tenantId
+    UserResponse:
+      type: object
+      properties:
+        responseHeader:
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/ResponseHeader'
+        user:
+          $ref: '#/components/schemas/User'
