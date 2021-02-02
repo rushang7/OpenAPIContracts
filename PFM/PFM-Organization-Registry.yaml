@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  description: |
+    Public Finance Management - Organization Registry
+  version: "1.0.0"
+  title: PFM Organization Registry
+
+paths:
+  '/org/v1/_create':
+    post:
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Organization'
+                - required:
+                  - tenantId
+                  - name
+                  - description
+                  - type
+      responses:
+        '200':
+          description: Organization created successfully 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: Error occurred while creating the organization
+  
+  '/org/v1/_update':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Organization'
+                - required:
+                  - uuid
+      responses:
+        '200':
+          description: Organization updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '400':
+          description: Error occurred while updating the organization
+  
+  '/org/v1/_delete':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Organization'
+                - required:
+                  - uuid
+      responses:
+        '200': 
+          description: Organization deleted successfully
+        '400':
+          description: Error occurred while deleting the organization
+  
+  '/org/v1/_cancel':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Organization'
+                - required:
+                  - uuid
+      responses:
+        '200':
+          description: Organization deactivated successfully
+        '400':
+          description: Error occurred while deactivating the organization
+
+  '/org/v1/_search':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Organization'
+                - required:
+                  - tenantId
+      responses:
+        '200':
+          description: Organization Search Results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+
+components:
+  schemas:
+    Organization:
+      type: object
+      properties:
+        tenantId:
+          type: string
+          example: 'in'
+        uuid:
+          type: string
+          format: uuid
+          example: 'abcd-wxyz'
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
