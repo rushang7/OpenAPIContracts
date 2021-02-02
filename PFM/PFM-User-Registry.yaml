@@ -16,7 +16,7 @@ paths:
                 - $ref: '#/components/schemas/User'
                 - required:
                   - username
-                  - primaryTenant
+                  - tenantId
       responses:
         '200':
           description: User created successfully 
@@ -62,6 +62,22 @@ paths:
           description: User deleted successfully
         '400':
           description: Error occurred while deleting the user
+  
+  '/user/v1/_cancel':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/User'
+                - required:
+                  - userId
+      responses:
+        '200':
+          description: User deactivated successfully
+        '400':
+          description: Error occurred while deactivating the user
           
   '/user/v1/_search':
     post:
@@ -72,7 +88,7 @@ paths:
               allOf:
                 - $ref: '#/components/schemas/User'
                 - required:
-                  - primaryTenant
+                  - tenantId
       responses:
         '200':
           description: User Search Results
