@@ -1,0 +1,15 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: Common object Definitions for PFM
+  version: "1.0.0"
+  title: PFM Common Definitions
+
+paths: {}
+
+components:
+  schemas:
+    RequestHeader:
+      type: object
+    ResponseHeader:
+      type: object
