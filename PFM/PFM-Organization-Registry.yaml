@@ -12,20 +12,14 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/Organization'
-                - required:
-                  - tenantId
-                  - name
-                  - description
-                  - type
+              $ref: '#/components/schemas/OrganizationCreateRequest'
       responses:
         '200':
           description: Organization created successfully 
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
+                $ref: '#/components/schemas/OrganizationResponse'
         '400':
           description: Error occurred while creating the organization
   
@@ -35,17 +29,14 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/Organization'
-                - required:
-                  - uuid
+              $ref: '#/components/schemas/OrganizationUpdateRequest'
       responses:
         '200':
           description: Organization updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organization'
+                $ref: '#/components/schemas/OrganizationResponse'
         '400':
           description: Error occurred while updating the organization
   
@@ -55,13 +46,14 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/Organization'
-                - required:
-                  - uuid
+              $ref: '#/components/schemas/OrganizationDeleteRequest'
       responses:
         '200': 
           description: Organization deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
         '400':
           description: Error occurred while deleting the organization
   
@@ -71,35 +63,38 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/Organization'
-                - required:
-                  - uuid
+              $ref: '#/components/schemas/OrganizationDeleteRequest'
       responses:
         '200':
           description: Organization deactivated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
         '400':
           description: Error occurred while deactivating the organization
-
+          
   '/org/v1/_search':
     post:
       requestBody:
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/Organization'
-                - required:
-                  - tenantId
+              $ref: '#/components/schemas/OrganizationSearchRequest'
       responses:
         '200':
           description: Organization Search Results
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Organization'
+                type: object
+                properties:
+                  responseHeader:
+                    $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/ResponseHeader'
+                  organizations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Organization'
 
 components:
   schemas:
@@ -112,10 +107,75 @@ components:
         uuid:
           type: string
           format: uuid
-          example: 'abcd-wxyz'
         name:
-          type: string
-        description:
           type: string
         type:
           type: string
+        description:
+          type: string
+    OrganizationCreateRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        organization:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Organization'
+            - required: 
+              - tenantId
+              - name
+              - type
+              - description
+    OrganizationUpdateRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        organization:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Organization'
+            - required: 
+              - tenantId
+              - uuid
+    OrganizationDeleteRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        organization:
+          type: object
+          properties:
+            tenantId:
+              type: string
+            uuid: 
+              type: string
+          required:
+            - tenantId
+            - uuid
+    OrganizationSearchRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        organizationSearchParams:
+          type: object
+          properties:
+            tenantId:
+              type: string
+            uuid:
+              type: string
+            name: 
+              type: string
+            type:
+              type: string
+          required:
+            - tenantId
+    OrganizationResponse:
+      type: object
+      properties:
+        responseHeader:
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/ResponseHeader'
+        organization:
+          $ref: '#/components/schemas/Organization'
