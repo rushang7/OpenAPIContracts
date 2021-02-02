@@ -11,5 +11,40 @@ components:
   schemas:
     RequestHeader:
       type: object
+      properties:
+        requesstMessageId:
+          type: string
+          format: uuid
+        correlationId:
+          type: string
+          format: uuid
+        authToken: 
+          type: string
+        apiId:
+          type: string
+        apiVersion:
+          type: string
+        deviceId:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+
     ResponseHeader:
       type: object
+      properties:
+        responseMessageId:
+          type: string
+          format: uuid
+        requestMessageId:
+          type: string
+          format: uuid
+        correlationId: 
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: 
+            - Success
+            - Accepted
+            - Failed
