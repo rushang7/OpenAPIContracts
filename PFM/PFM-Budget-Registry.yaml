@@ -1,0 +1,202 @@
+openapi: 3.0.0
+info:
+  description: |
+    Public Finance Management - Budget Registry
+  version: "1.0.0"
+  title: PFM Budget Registry
+
+paths:
+  '/budget/v1/_create':
+    post:
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetCreateRequest'
+      responses:
+        '200':
+          description: Budget created successfully 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetResponse'
+        '400':
+          description: Error occurred while creating the budget
+  
+  '/budget/v1/_update':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetUpdateRequest'
+      responses:
+        '200':
+          description: Budget updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetResponse'
+        '400':
+          description: Error occurred while updating the budget
+  
+  '/budget/v1/_delete':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetDeleteRequest'
+      responses:
+        '200': 
+          description: Budget deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetResponse'
+        '400':
+          description: Error occurred while deleting the budget
+  
+  '/budget/v1/_cancel':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetDeleteRequest'
+      responses:
+        '200':
+          description: Budget deactivated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetResponse'
+        '400':
+          description: Error occurred while deactivating the budget
+          
+  '/budget/v1/_search':
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetSearchRequest'
+      responses:
+        '200':
+          description: Budget Search Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  responseHeader:
+                    $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/ResponseHeader'
+                  budgets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Budget'
+
+components:
+  schemas:
+    Budget:
+      type: object
+      properties:
+        tenantId:
+          type: string
+          example: 'in'
+        uuid:
+          type: string
+          format: uuid
+        coaTier1:
+          type: string
+        coaTier2:
+          type: string
+        coaTier3:
+          type: string
+        coaTier4:
+          type: string
+        coaTier5:
+          type: string
+        coaTier6:
+          type: string
+        authorizedOrganization:
+          type: string
+        target:
+          type: string
+        location:
+          type: string
+        amount:
+          type: number
+        fiscalPeriod:
+          type: string
+        allocationSource:
+          type: string
+        proposedBy:
+          type: string
+        budgetStatus:
+          type: string
+          enum:
+            - Proposed
+            - Forwarded
+            - Approved by AD
+            - Allocated by FD
+            - Unallocated Revenue
+    BudgetCreateRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        budget:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Budget'
+            - required: 
+              - tenantId
+    BudgetUpdateRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        budget:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Budget'
+            - required:
+              - tenantId 
+              - uuid
+    BudgetDeleteRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        budget:
+          type: object
+          properties:
+            tenantId:
+              type: string
+            uuid: 
+              type: string
+          required:
+            - tenantId
+            - uuid
+    BudgetSearchRequest:
+      type: object
+      properties:
+        requestHeader: 
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/RequestHeader'
+        budgetSearchParams:
+          type: object
+          properties:
+            tenantId:
+              type: string
+            uuid:
+              type: string
+          required:
+            - tenantId
+    BudgetResponse:
+      type: object
+      properties:
+        responseHeader:
+          $ref: 'https://raw.githubusercontent.com/rushang7-eGov/OpenAPIContracts/master/PFM/PFM-Common-Definitions.yaml#/components/schemas/ResponseHeader'
+        user:
+          $ref: '#/components/schemas/Budget'
