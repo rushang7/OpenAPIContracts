@@ -1,0 +1,245 @@
+---
+openapi: 3.0.0
+info:
+  title: PFM Expense Registry
+  description: |
+    Public Finance Management - Expense Registry
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /expense/v1/_create:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseCreateRequest'
+      responses:
+        "200":
+          description: Expense created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseResponse'
+        "400":
+          description: Error occurred while creating the expense
+  /expense/v1/_update:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseUpdateRequest'
+      responses:
+        "200":
+          description: Expense updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseResponse'
+        "400":
+          description: Error occurred while updating the expense
+  /expense/v1/_delete:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseDeleteRequest'
+      responses:
+        "200":
+          description: Expense deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseResponse'
+        "400":
+          description: Error occurred while deleting the expense
+  /expense/v1/_cancel:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseDeleteRequest'
+      responses:
+        "200":
+          description: Expense deactivated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseResponse'
+        "400":
+          description: Error occurred while deactivating the expense
+  /expense/v1/_search:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseSearchRequest'
+      responses:
+        "200":
+          description: Expense Search Results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+components:
+  schemas:
+    Expense:
+      type: object
+      properties:
+        tenantId:
+          type: string
+          example: in
+        uuid:
+          type: string
+          format: uuid
+        timestamp:
+          type: integer
+          format: int64
+        paymentMethod:
+          type: string
+        payee:
+          type: string
+        payer:
+          type: string
+        billURN:
+          type: string
+        amount:
+          type: number
+        budgetStatus:
+          type: string
+          enum:
+          - Advance
+          - Due
+          - Executed
+          - Refunded
+          - Lapsed
+          - Internally Audited
+          - Externally Audited
+        reconStatus:
+          type: string
+          enum:
+          - Successful
+          - Assumed Successful
+          - Rejected
+    ExpenseCreateRequest:
+      type: object
+      properties:
+        requestHeader:
+          $ref: '#/components/schemas/RequestHeader'
+        expense:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/Expense'
+          - required:
+            - description
+            - name
+            - tenantId
+            - type
+    ExpenseUpdateRequest:
+      type: object
+      properties:
+        requestHeader:
+          $ref: '#/components/schemas/RequestHeader'
+        expense:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/Expense'
+          - required:
+            - tenantId
+            - uuid
+    ExpenseDeleteRequest:
+      type: object
+      properties:
+        requestHeader:
+          $ref: '#/components/schemas/RequestHeader'
+        expense:
+          $ref: '#/components/schemas/ExpenseDeleteRequest_expense'
+    ExpenseSearchRequest:
+      type: object
+      properties:
+        requestHeader:
+          $ref: '#/components/schemas/RequestHeader'
+        expenseSearchParams:
+          $ref: '#/components/schemas/ExpenseSearchRequest_expenseSearchParams'
+    ExpenseResponse:
+      type: object
+      properties:
+        responseHeader:
+          $ref: '#/components/schemas/ResponseHeader'
+        expense:
+          $ref: '#/components/schemas/Expense'
+    ResponseHeader:
+      type: object
+      properties:
+        responseMessageId:
+          type: string
+          format: uuid
+        requestMessageId:
+          type: string
+          format: uuid
+        correlationId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+          - Success
+          - Accepted
+          - Failed
+    RequestHeader:
+      type: object
+      properties:
+        requestMessageId:
+          type: string
+          format: uuid
+        correlationId:
+          type: string
+          format: uuid
+        authToken:
+          type: string
+        apiId:
+          type: string
+        apiVersion:
+          type: string
+        deviceId:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+    inline_response_200:
+      type: object
+      properties:
+        responseHeader:
+          $ref: '#/components/schemas/ResponseHeader'
+        expenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Expense'
+    ExpenseDeleteRequest_expense:
+      required:
+      - tenantId
+      - uuid
+      type: object
+      properties:
+        tenantId:
+          type: string
+        uuid:
+          type: string
+    ExpenseSearchRequest_expenseSearchParams:
+      required:
+      - tenantId
+      type: object
+      properties:
+        tenantId:
+          type: string
+        uuid:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
