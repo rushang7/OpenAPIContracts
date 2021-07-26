@@ -1,50 +1,189 @@
 openapi: 3.0.0
-servers: []
 info:
-  description: Common object Definitions for PFM
   version: "1.0.0"
-  title: PFM Common Definitions
-
+  title: Common Object Definitions
+  description: Definitions of common objects used across the modules. These objects
+    will/may be commonly used by all eGov API deicitions. There are no paths
+    defined in this spec as these objects cannot be used solely on their own.
+  contact:
+    name: Egovernments Foundation
+    email: contact@egovernments.org
 paths: {}
-
 components:
   schemas:
-    RequestHeader:
-      type: object
-      properties:
-        requestMessageId:
-          type: string
-          format: uuid
-        correlationId:
-          type: string
-          format: uuid
-        authToken: 
-          type: string
-        apiId:
-          type: string
-        apiVersion:
-          type: string
-        deviceId:
-          type: string
-        timestamp:
-          type: integer
-          format: int64
-
     ResponseHeader:
       type: object
+      readOnly: true
+      description: ResponseHeader should be used to carry metadata information about the
+        response from the server. apiId, ver and msgId in ResponseHeader should
+        always correspond to the same values in respective request's
+        RequestHeader.
       properties:
-        responseMessageId:
+        ts:
+          type: integer
+          format: int64
+          description: response time in epoch
+        correlationId:
           type: string
-          format: uuid
-        requestMessageId:
+          description: unique response message id (UUID) - will usually be the correlation
+            id from the server
+          maxLength: 256
+        msgId:
           type: string
-          format: uuid
-        correlationId: 
-          type: string
-          format: uuid
+          description: message id of the request
+          maxLength: 256
         status:
           type: string
-          enum: 
-            - Success
-            - Accepted
-            - Failed
+          description: status of request processing
+          enum:
+            - SUCCESS
+            - FAILED
+        signature:
+          type: string
+          description: Hash describing the current Request
+        version:
+          type: string
+          description: The version of the API
+          maxLength: 64
+          minLength: 2
+          nullable: false
+    
+    Location:
+      type: object
+      description: Capture the location  
+      properties:
+        type:
+          type: string
+          description: Capture the head code category 
+        code:
+          type: string
+          description: unique identifier of the location
+          maxLength: 6
+        children:
+          type: array
+          items:
+           $ref: '#/components/schemas/Location'
+    
+    RequestHeader:
+      type: object
+      description: RequestHeader should be used to carry meta information about the requests
+        to the server as described in the fields below. All eGov APIs will use
+        requestHeader as a part of the request body to carry this meta
+        information. Some of this information will be returned back from the
+        server as part of the ResponseHeader in the response body to ensure
+        correlation.
+      properties:
+        
+        ts:
+          type: integer
+          format: int64
+          description: time in epoch
+          nullable: false
+        version:
+          type: string
+          description: The version of the API
+          maxLength: 64
+          minLength: 2
+          nullable: false
+        msgId:
+          type: string
+          description: Unique request message id from the caller
+          maxLength: 256
+        userInfo:
+          $ref: "#/components/schemas/UserInfo"
+        correlationId:
+          type: string
+          readOnly: true
+        signature:
+          type: string
+          description: Hash describing the current RequestHeader
+    
+    UserInfo:
+      type: object
+      description: Capture the user information
+      readOnly: true
+      properties:
+        uuid:
+          type: string
+          description: System Generated User id of the authenticated user.
+        roles:
+          type: array
+          description: List of roles assigned to a user 
+          items:
+           type: string
+        tenants:
+          type: array
+          description: List of tenants assigned to a user 
+          items:
+            type: string
+        attributes:
+          type: object
+    
+    Error:
+      type: object
+      description: Error object will be returned as a part of reponse body in conjunction
+        with ResponseHeader as part of ErrorResponse whenever the request
+        processing status in the ResponseHeader is FAILED. HTTP return in this
+        scenario will usually be HTTP 400.
+      properties:
+        code:
+          type: string
+          description: Error Code will be service specific error label/code to identiffy the
+            error. 
+            Example for error code
+            would be User.NotFound to indicate User Not Found by
+            User/Authentication service. All services must declare their
+            possible Error Codes with brief description in the error response
+            section of their API path.
+        message:
+          type: string
+          description: Human readable error message
+        description:
+          type: string
+          description: technical description of the error which can help developer to debug the error if error is unexpected.  
+      required:
+        - code
+        - message
+        - description
+        
+    ErrorResponse:
+      type: object
+      description: All APIs will return ErrorRes in case of failure which will carry
+        ResponseHeader as metadata and Error object as actual representation of
+        error.
+      properties:
+        ResponseHeader:
+          $ref: "#/components/schemas/ResponseHeader"
+        Errors:
+          description: Error response array to return multiple error for single request 
+          type: array
+          minLength: 1
+          items:
+            $ref: "#/components/schemas/Error"
+      required:
+        - ResponseHeader    
+        
+    AuditDetails:
+      type: object
+      description: Collection of audit related fields used by most models
+      readOnly: true
+      properties:
+        createdBy:
+          type: string
+          description: UUID (preferred) or userid of the user that created the object
+          readOnly: true
+        lastModifiedBy:
+          type: string
+          description: UUID (preferred) or userid of the user that last modified the
+            object
+          readOnly: true
+        createdTime:
+          type: integer
+          format: int64
+          description: epoch of the time object is created
+          readOnly: true
+        lastModifiedTime:
+          type: integer
+          format: int64
+          description: epoch of the time object is last modified
+          readOnly: true
