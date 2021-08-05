@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: iFIX-Data-Models
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/eGovTrial/iFIX-Data-Models/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths: {}
+components:
+  schemas:
+    FiscalEventDruid:
+      type: object
+      properties:
+        eventId:
+          type: string
+          format: uuid
+          example: 2b869ccf-4c27-410e-9a5f-47740ee307ed
+        tenantId:
+          type: string
+          example: pb
+        eventTime:
+          type: integer
+          format: int64
+          example: 1628065685000
+        departmentName:
+          type: string
+          example: DWSS
+        projectName:
+          type: string
+          example: GPWSS-KartarpurSahib
+        eatName:
+          type: string
+          example: JalJeevanMission
+        geoLocation:
+          type: string
+          example: in-pb-jalandhar-taluka-village
+        lineitemId:
+          type: string
+          format: uuid
+          example: 68e46139-1ad7-42c7-95fb-06e9393a3900
+        lineItemFromTime:
+          type: integer
+          format: int64
+          example: 1628056138000
+        lineItemToTime:
+          type: integer
+          format: int64
+          example: 1628065685000
+        amount:
+          type: number
+          example: 10220.25
+        coaCode:
+          type: string
+          example: 1234-123-123-12-12-12
