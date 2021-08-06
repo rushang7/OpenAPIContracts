@@ -8,47 +8,566 @@ servers:
 paths: {}
 components:
   schemas:
-    FiscalEventDruid:
+    Government:
       type: object
       properties:
-        eventId:
-          type: string
-          format: uuid
-          example: 2b869ccf-4c27-410e-9a5f-47740ee307ed
-        tenantId:
+        id:
           type: string
           example: pb
-        eventTime:
-          type: integer
-          format: int64
-          example: 1628065685000
-        departmentName:
+        name:
           type: string
+          example: Punjab
+    Department:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique system generated UUID
+          example: 5d664a9f-9367-458a-aa5f-07fb18b90adc
+        code:
+          type: string
+          description: Unique department code
           example: DWSS
-        projectName:
+        name:
           type: string
-          example: GPWSS-KartarpurSahib
-        eatName:
+          description: Name of the department
+          example: Department of Water Supply & Sanitation
+      description: Department details
+    EAT:
+      type: object
+      properties:
+        id:
           type: string
-          example: JalJeevanMission
-        geoLocation:
+          description: Unique system generated UUID
+          example: d334d99a-b5c1-426c-942b-f11b5b5454fe
+        code:
           type: string
-          example: in-pb-jalandhar-taluka-village
-        lineitemId:
+          description: Unique EAT code
+          example: JJM
+        name:
           type: string
-          format: uuid
-          example: 68e46139-1ad7-42c7-95fb-06e9393a3900
-        lineItemFromTime:
-          type: integer
-          format: int64
-          example: 1628056138000
-        lineItemToTime:
-          type: integer
-          format: int64
-          example: 1628065685000
-        amount:
-          type: number
-          example: 10220.25
+          description: Name of the EAT
+          example: Jal Jeevan Mission
+        type:
+          type: string
+          description: Type of the EAT
+          enum:
+          - Scheme
+          - Non-Scheme
+      description: EAT details
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique system generated UUID
+          example: 6ab1b1d2-e224-46fa-b53b-ac83b3c7ce95
+        code:
+          type: string
+          description: Unique Project code
+          example: PWT
+        name:
+          type: string
+          description: Name of the Project
+          example: Peepli Water Tank
+      description: Captures the Project attributes
+    ChartOfAccount:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique system generated UUID
+          example: e9f940d4-69aa-4bbb-aa82-111b8948a6b6
         coaCode:
           type: string
+          description: Chart of account concatinated string
           example: 1234-123-123-12-12-12
+        majorHead:
+          type: string
+          description: Major head code
+          example: "1234"
+        majorHeadName:
+          type: string
+          description: Major head name
+        majorHeadType:
+          type: string
+          description: Major head code type
+          example: Revenue
+        subMajorHead:
+          type: string
+          description: Sub-Major head code
+          example: "123"
+        subMajorHeadName:
+          type: string
+          description: Sub-Major head name
+        minorHead:
+          type: string
+          description: Minor head code
+          example: "123"
+        minorHeadName:
+          type: string
+          description: Minor head name
+        subHead:
+          type: string
+          description: Sub-Head code
+          example: "12"
+        subHeadName:
+          type: string
+          description: Sub-Head name
+        groupHead:
+          type: string
+          description: Group head code
+          example: "12"
+        groupHeadName:
+          type: string
+          description: Group head name
+        objectHead:
+          type: string
+          description: Object head code
+          example: "12"
+        objectHeadName:
+          type: string
+          description: Object head name
+    Amount:
+      required:
+      - amount
+      - coa
+      type: object
+      properties:
+        id:
+          type: string
+          description: System generated UUID
+          example: 51c9c03c-1607-4dd5-9e0e-93bbf860f6f7
+        amount:
+          type: number
+          description: Transaction Amount
+          example: 10234.5
+        coaId:
+          type: string
+          description: Id of Chart of Account from the iFix master data.
+          example: d1e87330-4de0-4d15-8d92-d40bfa9b3ca4
+        fromBillingPeriod:
+          type: integer
+          description: Start date of the billing period for which transaction is applicable
+          format: int64
+          example: 1622907239000
+        toBillingPeriod:
+          type: integer
+          description: Start date of the billing period for which transaction is applicable
+          format: int64
+          example: 1628177643000
+      description: Capture the transaction amount and chart of account corresponding
+        to the transaction amount
+    FiscalEventRequest:
+      required:
+      - amountDetails
+      - eventType
+      - referenceId
+      - tenantId
+      - transactionTime
+      type: object
+      properties:
+        id:
+          type: string
+          description: System generated UUID.
+          example: fecbbf1d-d6e3-4f24-9935-02c33b9248e0
+        tenantId:
+          type: string
+          description: Tenant Id
+          nullable: false
+          example: pb
+        projectId:
+          type: string
+          description: The unique reference id of the project under which the event
+            is occurring
+          format: uuid
+          example: 090d1d25-8b88-46a3-b4c9-95b66483beb5
+        eventType:
+          type: string
+          description: "Captures the event type (eg- Sanction(B), Appropriation(B),\
+            \ Allocation(Fin-AD-BCO-DDO)(B), IntraTransfer (C), Inter Transfer (C),\
+            \ Demand(A), Receipt (C), Bill(A),Payment (C)"
+          nullable: false
+          example: Appropriation
+        eventTime:
+          type: integer
+          description: when the event occured at source system level
+          format: int64
+          example: 1628177497000
+        referenceId:
+          type: string
+          description: reference unique id(transaction id) of the caller system
+          example: 013e9c56-8207-4dac-9f4d-f1e20bd824e7
+        parentEventId:
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event using this reference id.
+          nullable: true
+          example: 7d476bb0-bc9f-48e2-8ad4-5a4a36220779
+        parentReferenceId:
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event in source system using this reference id.
+          nullable: true
+          example: 77f23efe-879d-407b-8f23-7b8dd5b2ecb1
+        amountDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Amount'
+        auditDetails:
+          $ref: '#/components/schemas/AuditDetails'
+        attributes:
+          type: object
+      description: This object captures the fiscal information of external systems.
+    AmountDetailsDeReferenced:
+      required:
+      - amount
+      - coa
+      type: object
+      properties:
+        id:
+          type: string
+          description: System generated UUID
+          example: 51c9c03c-1607-4dd5-9e0e-93bbf860f6f7
+        amount:
+          type: number
+          description: Transaction Amount
+          example: 10234.5
+        coa:
+          $ref: '#/components/schemas/ChartOfAccount'
+        fromBillingPeriod:
+          type: integer
+          description: Start date of the billing period for which transaction is applicable
+          format: int64
+          example: 1622907239000
+        toBillingPeriod:
+          type: integer
+          description: Start date of the billing period for which transaction is applicable
+          format: int64
+          example: 1628177643000
+      description: Capture the transaction amount and chart of account corresponding
+        to the transaction amount
+    FiscalEventDeReferenced:
+      required:
+      - amountDetails
+      - eventType
+      - referenceId
+      - tenantId
+      - transactionTime
+      type: object
+      properties:
+        id:
+          type: string
+          description: System generated UUID.
+          example: fecbbf1d-d6e3-4f24-9935-02c33b9248e0
+        tenantId:
+          type: string
+          description: Tenant Id
+          nullable: false
+          example: pb
+        government:
+          $ref: '#/components/schemas/Government'
+        department:
+          $ref: '#/components/schemas/Department'
+        eat:
+          $ref: '#/components/schemas/EAT'
+        project:
+          $ref: '#/components/schemas/Project'
+        eventType:
+          type: string
+          description: "Captures the event type (eg- Sanction(B), Appropriation(B),\
+            \ Allocation(Fin-AD-BCO-DDO)(B), IntraTransfer (C), Inter Transfer (C),\
+            \ Demand(A), Receipt (C), Bill(A),Payment (C)"
+          nullable: false
+          example: Appropriation
+        eventTime:
+          type: integer
+          description: when the event occured at source system level
+          format: int64
+          example: 1628177497000
+        referenceId:
+          type: string
+          description: reference unique id(transaction id) of the caller system
+          example: 013e9c56-8207-4dac-9f4d-f1e20bd824e7
+        parentEventId:
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event using this reference id.
+          nullable: true
+          example: 7d476bb0-bc9f-48e2-8ad4-5a4a36220779
+        parentReferenceId:
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event in source system using this reference id.
+          nullable: true
+          example: 77f23efe-879d-407b-8f23-7b8dd5b2ecb1
+        amountDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmountDetailsDeReferenced'
+        auditDetails:
+          $ref: '#/components/schemas/AuditDetails'
+        attributes:
+          type: object
+      description: It gets the whole master data objects based on the reference ids
+        present in the incoming request
+    FiscalEventMongoDB:
+      $ref: '#/components/schemas/FiscalEventDeReferenced'
+    FiscalEventLineItemUnbundled:
+      type: object
+      properties:
+        id:
+          type: string
+          description: System generated UUID of Line Item
+          example: 51c9c03c-1607-4dd5-9e0e-93bbf860f6f7
+        eventId:
+          type: string
+          description: Fiscal Event Reference Id
+          example: fecbbf1d-d6e3-4f24-9935-02c33b9248e0
+        tenantId:
+          type: string
+          description: Tenant Id
+          nullable: false
+          example: pb
+        government:
+          $ref: '#/components/schemas/Government'
+        department:
+          $ref: '#/components/schemas/Department'
+        eat:
+          $ref: '#/components/schemas/EAT'
+        project:
+          $ref: '#/components/schemas/Project'
+        eventType:
+          type: string
+          description: "Captures the event type (eg- Sanction(B), Appropriation(B),\
+            \ Allocation(Fin-AD-BCO-DDO)(B), IntraTransfer (C), Inter Transfer (C),\
+            \ Demand(A), Receipt (C), Bill(A),Payment (C)"
+          nullable: false
+          example: Appropriation
+        eventTime:
+          type: integer
+          description: when the event occured at source system level
+          format: int64
+          example: 1628177497000
+        referenceId:
+          type: string
+          description: reference unique id(transaction id) of the caller system
+          example: 013e9c56-8207-4dac-9f4d-f1e20bd824e7
+        parentEventId:
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event using this reference id.
+          nullable: true
+          example: 7d476bb0-bc9f-48e2-8ad4-5a4a36220779
+        parentReferenceId:
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event in source system using this reference id.
+          nullable: true
+          example: 77f23efe-879d-407b-8f23-7b8dd5b2ecb1
+        amount:
+          type: number
+          description: Transaction Amount
+          example: 10234.5
+        coa:
+          $ref: '#/components/schemas/ChartOfAccount'
+        fromBillingPeriod:
+          type: integer
+          description: Start date of the billing period for which transaction is applicable
+          format: int64
+          example: 1622907239000
+        toBillingPeriod:
+          type: integer
+          description: Start date of the billing period for which transaction is applicable
+          format: int64
+          example: 1628177643000
+      description: This is the unbundled line item into individual record from a given
+        fiscal event.
+    FiscalEventLineItemFlattened:
+      type: object
+      properties:
+        id:
+          type: string
+          description: System generated UUID of Line Item
+          example: 51c9c03c-1607-4dd5-9e0e-93bbf860f6f7
+        eventId:
+          type: string
+          description: Fiscal Event Reference Id
+          example: fecbbf1d-d6e3-4f24-9935-02c33b9248e0
+        tenantId:
+          type: string
+          description: Tenant Id
+          nullable: false
+          example: pb
+        government.id:
+          type: string
+          example: pb
+        government.name:
+          type: string
+          example: Punjab
+        department.id:
+          type: string
+          description: Unique system generated UUID
+          example: 5d664a9f-9367-458a-aa5f-07fb18b90adc
+        department.code:
+          type: string
+          description: Unique department code
+          example: DWSS
+        department.name:
+          type: string
+          description: Name of the department
+          example: Department of Water Supply & Sanitation
+        eat.id:
+          type: string
+          description: Unique system generated UUID
+          example: d334d99a-b5c1-426c-942b-f11b5b5454fe
+        eat.code:
+          type: string
+          description: Unique EAT code
+          example: JJM
+        eat.name:
+          type: string
+          description: Name of the EAT
+          example: Jal Jeevan Mission
+        eat.type:
+          type: string
+          description: Type of the EAT
+          enum:
+          - Scheme
+          - Non-Scheme
+        project.id:
+          type: string
+          description: Unique system generated UUID
+          example: 6ab1b1d2-e224-46fa-b53b-ac83b3c7ce95
+        project.code:
+          type: string
+          description: Unique Project code
+          example: PWT
+        project.name:
+          type: string
+          description: Name of the Project
+          example: Peepli Water Tank
+        eventType:
+          type: string
+          description: "Captures the event type (eg- Sanction(B), Appropriation(B),\
+            \ Allocation(Fin-AD-BCO-DDO)(B), IntraTransfer (C), Inter Transfer (C),\
+            \ Demand(A), Receipt (C), Bill(A),Payment (C)"
+          nullable: false
+          example: Appropriation
+        eventTime:
+          type: integer
+          description: when the event occured at source system level
+          format: int64
+          example: 1628177497000
+        referenceId:
+          type: string
+          description: reference unique id(transaction id) of the caller system
+          example: 013e9c56-8207-4dac-9f4d-f1e20bd824e7
+        parentEventId:
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event using this reference id.
+          nullable: true
+          example: 7d476bb0-bc9f-48e2-8ad4-5a4a36220779
+        parentReferenceId:
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event in source system using this reference id.
+          nullable: true
+          example: 77f23efe-879d-407b-8f23-7b8dd5b2ecb1
+        amount:
+          type: number
+          description: Transaction Amount
+          example: 10234.5
+        coa.id:
+          type: string
+          description: Unique system generated UUID
+          example: e9f940d4-69aa-4bbb-aa82-111b8948a6b6
+        coa.coaCode:
+          type: string
+          description: Chart of account concatinated string
+          example: 1234-123-123-12-12-12
+        coa.majorHead:
+          type: string
+          description: Major head code
+          example: "1234"
+        coa.majorHeadName:
+          type: string
+          description: Major head name
+        coa.majorHeadType:
+          type: string
+          description: Major head code type
+          example: Revenue
+        coa.subMajorHead:
+          type: string
+          description: Sub-Major head code
+          example: "123"
+        coa.subMajorHeadName:
+          type: string
+          description: Sub-Major head name
+        coa.minorHead:
+          type: string
+          description: Minor head code
+          example: "123"
+        coa.minorHeadName:
+          type: string
+          description: Minor head name
+        coa.subHead:
+          type: string
+          description: Sub-Head code
+          example: "12"
+        coa.subHeadName:
+          type: string
+          description: Sub-Head name
+        coa.groupHead:
+          type: string
+          description: Group head code
+          example: "12"
+        coa.groupHeadName:
+          type: string
+          description: Group head name
+        coa.objectHead:
+          type: string
+          description: Object head code
+          example: "12"
+        coa.objectHeadName:
+          type: string
+          description: Object head name
+        fromBillingPeriod:
+          type: integer
+          description: Start date of the billing period for which transaction is applicable
+          format: int64
+          example: 1622907239000
+        toBillingPeriod:
+          type: integer
+          description: Start date of the billing period for which transaction is applicable
+          format: int64
+          example: 1628177643000
+      description: This is the flattened structure of line item that will get persisted
+        to Druid
+    FiscalEventDruid:
+      $ref: '#/components/schemas/FiscalEventLineItemFlattened'
+    AuditDetails:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: UUID (preferred) or userid of the user that created the object
+          readOnly: true
+        lastModifiedBy:
+          type: string
+          description: UUID (preferred) or userid of the user that last modified the
+            object
+          readOnly: true
+        createdTime:
+          type: integer
+          description: epoch of the time object is created
+          format: int64
+          readOnly: true
+        lastModifiedTime:
+          type: integer
+          description: epoch of the time object is last modified
+          format: int64
+          readOnly: true
+      description: Collection of audit related fields used by most models
+      readOnly: true
