@@ -77,44 +77,56 @@ components:
           type: string
           description: System generated UUID.
           readOnly: true
+          example: fecbbf1d-d6e3-4f24-9935-02c33b9248e0
         tenantId:
           maxLength: 256
           minLength: 2
           type: string
           description: Tenant Id
           nullable: false
+          example: pb
+        projectId:
+          type: string
+          description: The unique reference id of the project under which the event
+            is occurring
+          format: uuid
+          example: 090d1d25-8b88-46a3-b4c9-95b66483beb5
         eventType:
           maxLength: 64
           minLength: 1
           type: string
-          description: "Captures the event type(eg- bill, receipt, expenditure)"
+          description: "Captures the event type (eg- Sanction(B), Appropriation(B),\
+            \ Allocation(Fin-AD-BCO-DDO)(B), IntraTransfer (C), Inter Transfer (C),\
+            \ Demand(A), Receipt (C), Bill(A),Payment (C)"
           nullable: false
-        demandNo:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: "Capture the the demand number, it is like an ID that helps\
-            \ in identification that which demand for grant is for which department"
-          nullable: false
-        transactionTime:
+          example: Appropriation
+        eventTime:
           type: integer
           description: when the event occured at source system level
           format: int64
+          example: 1628177497000
         referenceId:
           maxLength: 64
           minLength: 1
           type: string
           description: reference unique id(transaction id) of the caller system
-        parentReferenceId:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: System generated UUID.
+          example: 013e9c56-8207-4dac-9f4d-f1e20bd824e7
         parentEventId:
           maxLength: 64
           minLength: 1
           type: string
-          description: System generated UUID.
+          description: If this is a follow up event then it will refer to the parent
+            event using this reference id.
+          nullable: true
+          example: 7d476bb0-bc9f-48e2-8ad4-5a4a36220779
+        parentReferenceId:
+          maxLength: 64
+          minLength: 1
+          type: string
+          description: If this is a follow up event then it will refer to the parent
+            event in source system using this reference id.
+          nullable: true
+          example: 77f23efe-879d-407b-8f23-7b8dd5b2ecb1
         amountDetails:
           type: array
           items:
@@ -136,26 +148,27 @@ components:
           type: string
           description: System generated UUID
           readOnly: true
+          example: 51c9c03c-1607-4dd5-9e0e-93bbf860f6f7
         amount:
-          maxLength: 64
-          minLength: 1
-          type: string
+          type: number
           description: Transaction Amount
-        coa:
+          example: 10234.5
+        coaId:
           maxLength: 64
           minLength: 1
           type: string
-          description: Chart of account for the tax head. This is the name spaced
-            field to accommodate hierarchical structure of the COA(eg- majorhead.submajorhead.minorhead...)
-          readOnly: true
+          description: Id of Chart of Account from the iFix master data.
+          example: d1e87330-4de0-4d15-8d92-d40bfa9b3ca4
         fromBillingPeriod:
           type: integer
           description: Start date of the billing period for which transaction is applicable
           format: int64
+          example: 1622907239000
         toBillingPeriod:
           type: integer
           description: Start date of the billing period for which transaction is applicable
           format: int64
+          example: 1628177643000
       description: Capture the transaction amount and chart of account corresponding
         to the transaction amount
     Criteria:
@@ -182,11 +195,11 @@ components:
           type: string
           description: "Captures the event type(eg- bill, receipt, expenditure)"
           nullable: false
-        fromTransactionTime:
+        fromEventTime:
           type: integer
           description: Search events b/w transaction time(Start date)
           format: int64
-        toTransactionTime:
+        toEventTime:
           type: integer
           description: Search events b/w transaction time(End date)
           format: int64
