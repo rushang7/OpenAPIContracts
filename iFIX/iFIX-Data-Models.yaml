@@ -33,7 +33,7 @@ components:
           description: Name of the department
           example: Department of Water Supply & Sanitation
       description: Department details
-    EAT:
+    Expenditure:
       type: object
       properties:
         id:
@@ -42,19 +42,19 @@ components:
           example: d334d99a-b5c1-426c-942b-f11b5b5454fe
         code:
           type: string
-          description: Unique EAT code
+          description: Unique Expenditure code
           example: JJM
         name:
           type: string
-          description: Name of the EAT
+          description: Name of the Expenditure
           example: Jal Jeevan Mission
         type:
           type: string
-          description: Type of the EAT
+          description: Type of the Expenditure
           enum:
           - Scheme
           - Non-Scheme
-      description: EAT details
+      description: Expenditure details
     Project:
       type: object
       properties:
@@ -269,8 +269,8 @@ components:
           $ref: '#/components/schemas/Government'
         department:
           $ref: '#/components/schemas/Department'
-        eat:
-          $ref: '#/components/schemas/EAT'
+        Expenditure:
+          $ref: '#/components/schemas/Expenditure'
         project:
           $ref: '#/components/schemas/Project'
         eventType:
@@ -333,8 +333,8 @@ components:
           $ref: '#/components/schemas/Government'
         department:
           $ref: '#/components/schemas/Department'
-        eat:
-          $ref: '#/components/schemas/EAT'
+        Expenditure:
+          $ref: '#/components/schemas/Expenditure'
         project:
           $ref: '#/components/schemas/Project'
         eventType:
@@ -417,21 +417,21 @@ components:
           type: string
           description: Name of the department
           example: Department of Water Supply & Sanitation
-        eat.id:
+        expenditure.id:
           type: string
           description: Unique system generated UUID
           example: d334d99a-b5c1-426c-942b-f11b5b5454fe
-        eat.code:
+        expenditure.code:
           type: string
-          description: Unique EAT code
+          description: Unique Expenditure code
           example: JJM
-        eat.name:
+        expenditure.name:
           type: string
-          description: Name of the EAT
+          description: Name of the Expenditure
           example: Jal Jeevan Mission
-        eat.type:
+        expenditure.type:
           type: string
-          description: Type of the EAT
+          description: Type of the Expenditure
           enum:
           - Scheme
           - Non-Scheme
