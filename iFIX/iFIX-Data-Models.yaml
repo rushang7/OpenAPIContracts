@@ -158,7 +158,7 @@ components:
           example: 1628177643000
       description: Capture the transaction amount and chart of account corresponding
         to the transaction amount
-    FiscalEventRequest:
+    FiscalEvent:
       required:
       - amountDetails
       - eventType
@@ -167,6 +167,10 @@ components:
       - transactionTime
       type: object
       properties:
+        version:
+          type: string
+          description: Version of the Data Model Definition
+          example: 1.0.0
         id:
           type: string
           description: System generated UUID.
@@ -219,6 +223,16 @@ components:
         attributes:
           type: object
       description: This object captures the fiscal information of external systems.
+    FiscalEventRequest:
+      required:
+      - fiscalEvent
+      - requestHeader
+      properties:
+        requestHeader:
+          $ref: '#/components/schemas/RequestHeader'
+        fiscalEvent:
+          $ref: '#/components/schemas/FiscalEvent'
+      description: Fiscal event request along with request metadata
     AmountDetailsDeReferenced:
       required:
       - amount
@@ -256,6 +270,10 @@ components:
       - transactionTime
       type: object
       properties:
+        version:
+          type: string
+          description: Version of the Data Model Definition
+          example: 1.0.0
         id:
           type: string
           description: System generated UUID.
@@ -316,6 +334,10 @@ components:
     FiscalEventLineItemUnbundled:
       type: object
       properties:
+        version:
+          type: string
+          description: Version of the Data Model Definition
+          example: 1.0.0
         id:
           type: string
           description: System generated UUID of Line Item
@@ -386,6 +408,10 @@ components:
     FiscalEventLineItemFlattened:
       type: object
       properties:
+        version:
+          type: string
+          description: Version of the Data Model Definition
+          example: 1.0.0
         id:
           type: string
           description: System generated UUID of Line Item
@@ -570,4 +596,55 @@ components:
           format: int64
           readOnly: true
       description: Collection of audit related fields used by most models
+      readOnly: true
+    RequestHeader:
+      type: object
+      properties:
+        ts:
+          type: integer
+          description: time in epoch
+          format: int64
+          nullable: false
+        version:
+          maxLength: 64
+          minLength: 2
+          type: string
+          description: The version of the API
+          nullable: false
+        msgId:
+          maxLength: 256
+          type: string
+          description: Unique request message id from the caller
+        userInfo:
+          $ref: '#/components/schemas/UserInfo'
+        correlationId:
+          type: string
+          readOnly: true
+        signature:
+          type: string
+          description: Hash describing the current RequestHeader
+      description: RequestHeader should be used to carry meta information about the
+        requests to the server as described in the fields below. All eGov APIs will
+        use requestHeader as a part of the request body to carry this meta information.
+        Some of this information will be returned back from the server as part of
+        the ResponseHeader in the response body to ensure correlation.
+    UserInfo:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: System Generated User id of the authenticated user.
+        roles:
+          type: array
+          description: List of roles assigned to a user
+          items:
+            type: string
+        tenants:
+          type: array
+          description: List of tenants assigned to a user
+          items:
+            type: string
+        attributes:
+          type: object
+      description: Capture the user information
       readOnly: true
