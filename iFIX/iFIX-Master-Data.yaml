@@ -1,9 +1,10 @@
 openapi: 3.0.0
 info:
   title: iFIX-Master-Data
+  description: iFIX-Master-Data
   version: 1.0.0
 servers:
-- url: https://virtserver.swaggerhub.com/eGovTrial/iFIX-Master-Data/1.0.0
+- url: https://virtserver.swaggerhub.com/rushang.dhanesha/iFIX-Master-Data/1.0.0
   description: SwaggerHub API Auto Mocking
 paths:
   /government/v1/_create:
@@ -60,71 +61,6 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/GovernmentResponse'
-        "400":
-          description: Invalid input.
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "500":
-          description: Internal server error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /fund/v1/_create:
-    post:
-      tags:
-      - Fund
-      summary: Create/Add new fund on iFix for a tenant
-      description: Create/Add new fund on iFix for a tenant
-      requestBody:
-        description: Details for the new fund + RequestHeader (meta data of the API).
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FundRequest'
-        required: true
-      responses:
-        "202":
-          description: Request has been accepted for processing
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/FundResponse'
-        "400":
-          description: Failed to process the request
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        "500":
-          description: Internal server error
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-  /fund/v1/_search:
-    post:
-      tags:
-      - Fund
-      summary: Get the list fund.
-      description: |
-        Based on the criteria get the list of funds.
-      requestBody:
-        description: RequestHeader meta data.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FundSearchRequest'
-        required: true
-      responses:
-        "200":
-          description: Successful response
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/FundResponse'
         "400":
           description: Invalid input.
           content:
@@ -269,19 +205,19 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /eat/v1/_create:
+  /expenditure/v1/_create:
     post:
       tags:
-      - EAT
-      summary: Create/Add new EAT on iFix for a tenant
-      description: Create/Add new EAT on iFix for a tenant
+      - Expenditure
+      summary: Create/Add new Expenditure on iFix for a tenant
+      description: Create/Add new Expenditure on iFix for a tenant
       requestBody:
-        description: Details for the new department + RequestHeader (meta data of
+        description: Details for the new Expenditure + RequestHeader (meta data of
           the API).
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EatRequest'
+              $ref: '#/components/schemas/ExpenditureRequest'
         required: true
       responses:
         "202":
@@ -289,7 +225,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EatResponse'
+                $ref: '#/components/schemas/ExpenditureResponse'
         "400":
           description: Failed to process the request
           content:
@@ -302,20 +238,20 @@ paths:
             '*/*':
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /eat/v1/_search:
+  /expenditure/v1/_search:
     post:
       tags:
-      - EAT
-      summary: Get the list EAT.
+      - Expenditure
+      summary: Get the list Expenditure.
       description: |
-        Based on the criteria get the list of EAT.
+        Based on the criteria get the list of Expenditure.
       requestBody:
-        description: Details for the EAT search criteria + RequestHeader (meta data
-          of the API).
+        description: Details for the Expenditure search criteria + RequestHeader (meta
+          data of the API).
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EatSearchRequest'
+              $ref: '#/components/schemas/ExpenditureSearchRequest'
         required: true
       responses:
         "200":
@@ -323,7 +259,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/EatResponse'
+                $ref: '#/components/schemas/ExpenditureResponse'
         "400":
           description: Invalid input.
           content:
@@ -425,88 +361,6 @@ components:
           $ref: '#/components/schemas/AuditDetails'
         attributes:
           type: object
-      description: This object captures the fiscal information of external systems.
-    Fund:
-      required:
-      - code
-      - id
-      - name
-      - subFund
-      - tenantId
-      - type
-      type: object
-      properties:
-        id:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Unique system generated UUID
-          readOnly: true
-        tenantId:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Unique tenant identifier
-        code:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Unique fund code
-        name:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Captures fund name
-        type:
-          type: string
-          description: type of fund
-          enum:
-          - CSS
-          - FC
-          - WB
-        subFund:
-          type: array
-          items:
-            $ref: '#/components/schemas/SubFund'
-        auditDetails:
-          $ref: '#/components/schemas/AuditDetails'
-      description: This object captures the information for fund and sub-fund
-    SubFund:
-      required:
-      - amount
-      - code
-      - id
-      - name
-      - type
-      type: object
-      properties:
-        id:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Unique system generated UUID
-          readOnly: true
-        code:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Unique sub fund code
-        name:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Captures sub fund name
-        type:
-          type: string
-          description: type of sub fund
-          enum:
-          - TIED
-          - UNTIED
-        percentage:
-          type: number
-          format: double
-        auditDetails:
-          $ref: '#/components/schemas/AuditDetails'
       description: This object captures the fiscal information of external systems.
     ChartOfAccount:
       required:
@@ -646,7 +500,7 @@ components:
         auditDetails:
           $ref: '#/components/schemas/AuditDetails'
       description: Captures the department attributes
-    EAT:
+    Expenditure:
       required:
       - code
       - name
@@ -669,15 +523,15 @@ components:
           maxLength: 64
           minLength: 1
           type: string
-          description: Capture unique eat code
+          description: Capture unique expenditure code
         name:
           maxLength: 256
           minLength: 2
           type: string
-          description: Capture the name of the eat
+          description: Capture the name of the expenditure
         type:
           type: string
-          description: Capture the type of the eat
+          description: Capture the type of the expenditure
           enum:
           - Scheme
           - Non-Scheme
@@ -688,7 +542,7 @@ components:
           description: Department id from department master
         auditDetails:
           $ref: '#/components/schemas/AuditDetails'
-      description: Captures the EAT attributes
+      description: Captures the Expenditure attributes
     Project:
       required:
       - code
@@ -716,12 +570,12 @@ components:
           maxLength: 256
           minLength: 2
           type: string
-          description: Capture the name of the eat
-        eatId:
+          description: Capture the name of the project
+        expenditureId:
           maxLength: 64
           minLength: 2
           type: string
-          description: Capture the eat id from eat master
+          description: Capture the expenditure id from expenditure master
         departmentId:
           maxLength: 64
           minLength: 2
@@ -786,7 +640,7 @@ components:
       description: Fund request along with request metadata
     FundResponse:
       properties:
-        responseInfo:
+        responseHeader:
           $ref: '#/components/schemas/ResponseHeader'
         funds:
           type: array
@@ -850,7 +704,7 @@ components:
       description: COA request along with request metadata
     COAResponse:
       properties:
-        responseInfo:
+        responseHeader:
           $ref: '#/components/schemas/ResponseHeader'
         chartOfAccounts:
           type: array
@@ -932,7 +786,7 @@ components:
       description: Department request along with request metadata
     DepartmentResponse:
       properties:
-        responseInfo:
+        responseHeader:
           $ref: '#/components/schemas/ResponseHeader'
         department:
           type: array
@@ -977,26 +831,26 @@ components:
           type: string
           description: Search by department code
       description: The object contains all the search criteria of the Department
-    EatRequest:
+    ExpenditureRequest:
       required:
-      - eat
+      - expenditure
       - requestHeader
       properties:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
-        eat:
-          $ref: '#/components/schemas/EAT'
-      description: Eat request along with request metadata
-    EatResponse:
+        expenditure:
+          $ref: '#/components/schemas/Expenditure'
+      description: Expenditure request along with request metadata
+    ExpenditureResponse:
       properties:
-        responseInfo:
+        responseHeader:
           $ref: '#/components/schemas/ResponseHeader'
-        eat:
+        Expenditure:
           type: array
           items:
-            $ref: '#/components/schemas/EAT'
-      description: Contains the ResponseHeader and the enriched Eat information
-    EatSearchRequest:
+            $ref: '#/components/schemas/Expenditure'
+      description: Contains the ResponseHeader and the enriched Expenditure information
+    ExpenditureSearchRequest:
       required:
       - criteria
       - requestHeader
@@ -1004,17 +858,17 @@ components:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
         criteria:
-          $ref: '#/components/schemas/EatSearchCriteria'
-      description: Eat search request along with request metadata. Defoult operator
-        b/w multiple criteria is AND.
-    EatSearchCriteria:
+          $ref: '#/components/schemas/ExpenditureSearchCriteria'
+      description: Expenditure search request along with request metadata. Defoult
+        operator b/w multiple criteria is AND.
+    ExpenditureSearchCriteria:
       required:
       - tenantId
       type: object
       properties:
         Ids:
           type: array
-          description: List of Eat ids
+          description: List of Expenditure ids
           items:
             maxItems: 50
             type: string
@@ -1027,13 +881,13 @@ components:
           maxLength: 256
           minLength: 2
           type: string
-          description: Search by Eat name
+          description: Search by Expenditure name
         code:
           maxLength: 64
           minLength: 2
           type: string
-          description: Search by Eat  code
-      description: The object contains all the search criteria of the Eat
+          description: Search by Expenditure code
+      description: The object contains all the search criteria of the Expenditure
     ProjectRequest:
       required:
       - project
@@ -1046,7 +900,7 @@ components:
       description: Project request along with request metadata
     ProjectResponse:
       properties:
-        responseInfo:
+        responseHeader:
           $ref: '#/components/schemas/ResponseHeader'
         project:
           type: array
@@ -1090,11 +944,11 @@ components:
           minLength: 2
           type: string
           description: Search by Project code
-        eatId:
+        expenditureId:
           maxLength: 64
           minLength: 2
           type: string
-          description: Capture the eat id from eat master
+          description: Capture the expenditure id from expenditure master
         departmentId:
           maxLength: 64
           minLength: 2
