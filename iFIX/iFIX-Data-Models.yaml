@@ -1,9 +1,9 @@
 openapi: 3.0.0
 info:
   title: iFIX-Data-Models
-  version: 1.0.0
+  version: 1.0.1
 servers:
-- url: https://virtserver.swaggerhub.com/eGovTrial/iFIX-Data-Models/1.0.0
+- url: https://virtserver.swaggerhub.com/eGovTrial/iFIX-Data-Models/1.0.1
   description: SwaggerHub API Auto Mocking
 paths: {}
 components:
@@ -193,6 +193,13 @@ components:
             \ Demand(A), Receipt (C), Bill(A),Payment (C)"
           nullable: false
           example: Appropriation
+        ingestionTime:
+          type: integer
+          description: when the event arrived in ifix
+          format: int64
+          nullable: false
+          readOnly: true
+          example: 1628177497000
         eventTime:
           type: integer
           description: when the event occured at source system level
@@ -298,6 +305,13 @@ components:
             \ Demand(A), Receipt (C), Bill(A),Payment (C)"
           nullable: false
           example: Appropriation
+        ingestionTime:
+          type: integer
+          description: when the event arrived in ifix
+          format: int64
+          nullable: false
+          readOnly: true
+          example: 1628177497000
         eventTime:
           type: integer
           description: when the event occured at source system level
@@ -370,6 +384,13 @@ components:
           type: integer
           description: when the event occured at source system level
           format: int64
+          example: 1628177497000
+        ingestionTime:
+          type: integer
+          description: when the event arrived in ifix
+          format: int64
+          nullable: false
+          readOnly: true
           example: 1628177497000
         referenceId:
           type: string
@@ -484,6 +505,13 @@ components:
           type: integer
           description: when the event occured at source system level
           format: int64
+          example: 1628177497000
+        ingestionTime:
+          type: integer
+          description: when the event arrived in ifix
+          format: int64
+          nullable: false
+          readOnly: true
           example: 1628177497000
         referenceId:
           type: string
