@@ -333,22 +333,25 @@ components:
       - tenantId
       type: object
       properties:
+        tenantId:
+          maxLength: 64
+          minLength: 2
+          type: string
+          description: Tenant Id
         Ids:
           type: array
           description: List of COA ids
           items:
             maxItems: 50
             type: string
-        tenantId:
-          maxLength: 64
-          minLength: 2
-          type: string
-          description: Tenant Id
         coaCode:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Chart of account concatinated string
+          type: array
+          items:
+            maxLength: 64
+            minLength: 1
+            maxItems: 50
+            type: string
+            description: Chart of account concatinated string
         majorHead:
           maxLength: 4
           minLength: 4
