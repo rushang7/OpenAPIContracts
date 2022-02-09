@@ -85,13 +85,6 @@ components:
           description: Tenant Id
           nullable: false
           example: pb
-        program:
-          maxLength: 256
-          minLength: 2
-          type: string
-          description: Tenant Id
-          nullable: false
-          example: pb
         sender:
           maxLength: 256
           minLength: 2
@@ -109,9 +102,9 @@ components:
           maxLength: 64
           minLength: 1
           type: string
-          description: "Captures the event type (eg- SANCTION(B), APPROPRIATION(B),\
-            \ ALLOCATION(FIN-AD-BCO-DDO)(B), INTRA_TRANSFER (C), INTER_TRANSFER (C),\
-            \ DEMAND(A), RECEIPT (C), BILL(A),PAYMENT (C)"
+          description: "Captures the event type (eg- 1.a. DEMAND, 1.b. BILL, 2.a.\
+            \ RECEIPT, 2.b. PAYMENT, 2.c. INTER_TRANSFER, 2.d. INTRA_TRANSFER, 3.a.\
+            \ SANCTION, 3.b. APPROPRIATION, 3.c. ALLOCATION)"
           nullable: false
           example: Appropriation
         eventTime:
