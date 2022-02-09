@@ -216,7 +216,7 @@ components:
       - tenantId
       type: object
       properties:
-        ids:
+        Ids:
           type: array
           description: List of event ids
           items:
@@ -256,7 +256,9 @@ components:
         requestHeader:
           $ref: '#/components/schemas/RequestHeader'
         fiscalEvent:
-          $ref: '#/components/schemas/FiscalEvent'
+          type: array
+          items:
+            $ref: '#/components/schemas/FiscalEvent'
       description: Fiscal event request along with request metadata
     FiscalEventGetRequest:
       required:
