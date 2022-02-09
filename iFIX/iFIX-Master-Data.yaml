@@ -344,7 +344,7 @@ components:
           items:
             maxItems: 50
             type: string
-        coaCode:
+        coaCodes:
           type: array
           items:
             maxLength: 64
