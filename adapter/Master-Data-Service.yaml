@@ -387,13 +387,18 @@ components:
           minLength: 2
           type: string
           description: Capture the expenditure id from expenditure master
-        departmentEntitytId:
-          maxLength: 64
-          minLength: 2
-          type: string
-          description: Capture the department entity id from department entity master
-        departmentEntity:
-          $ref: '#/components/schemas/DepartmentEntity'
+        departmentEntityIds:
+          type: array
+          items:
+            maxLength: 64
+            minLength: 2
+            type: string
+            description: Capture the department entity id from department entity master
+        departmentEntities:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/DepartmentEntity'
         locationIds:
           type: array
           description: Capture the location id from location master
@@ -582,6 +587,11 @@ components:
           minLength: 2
           type: string
           description: Capture the department id from department master
+        departmentEntityId:
+          maxLength: 64
+          minLength: 2
+          type: string
+          description: Capture the department entity id from department entity service
         locationId:
           maxLength: 64
           minLength: 2
