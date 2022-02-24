@@ -18,121 +18,6 @@ components:
         name:
           type: string
           example: Punjab
-    Department:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique system generated UUID
-          example: 5d664a9f-9367-458a-aa5f-07fb18b90adc
-        code:
-          type: string
-          description: Unique department code
-          example: DWSS
-        name:
-          type: string
-          description: Name of the department
-          example: Department of Water Supply & Sanitation
-      description: Department details
-    Expenditure:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique system generated UUID
-          example: d334d99a-b5c1-426c-942b-f11b5b5454fe
-        code:
-          type: string
-          description: Unique Expenditure code
-          example: JJM
-        name:
-          type: string
-          description: Name of the Expenditure
-          example: Jal Jeevan Mission
-        type:
-          type: string
-          description: Type of the Expenditure
-          enum:
-          - Scheme
-          - Non-Scheme
-      description: Expenditure details
-    DepartmentEntityAttributes:
-      type: object
-      properties:
-        id:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Unique system generated UUID
-          readOnly: true
-        code:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Unique the department entity code
-        name:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Captures the department entity name
-        hierarchyLevel:
-          maxLength: 256
-          minLength: 1
-          type: number
-          description: Capture the level of the given department entity
-      description: The list basic attributes of a department entity that are stored
-        as part of the ancestry list
-    DepartmentEntity:
-      required:
-      - code
-      - hierarchyLevelId
-      - id
-      - name
-      type: object
-      properties:
-        id:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Unique system generated UUID
-          readOnly: true
-        code:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Unique the department entity code
-        name:
-          maxLength: 256
-          minLength: 1
-          type: string
-          description: Captures the department entity name
-        hierarchyLevel:
-          maxLength: 256
-          minLength: 1
-          type: number
-          description: Capture the level of the given department entity
-        ancestry:
-          type: array
-          items:
-            $ref: '#/components/schemas/DepartmentEntityAttributes'
-      description: This object captures the information for department entity
-      readOnly: true
-    Project:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique system generated UUID
-          example: 6ab1b1d2-e224-46fa-b53b-ac83b3c7ce95
-        code:
-          type: string
-          description: Unique Project code
-          example: PWT
-        name:
-          type: string
-          description: Name of the Project
-          example: Peepli Water Tank
-      description: Captures the Project attributes
     ChartOfAccount:
       type: object
       properties:
@@ -190,7 +75,7 @@ components:
         objectHeadName:
           type: string
           description: Object head name
-    AmountRequest:
+    AmountDetails:
       required:
       - amount
       - coa
@@ -204,11 +89,12 @@ components:
           type: number
           description: Transaction Amount
           example: 10234.5
-        coaCode:
+        coaId:
           maxLength: 64
           minLength: 1
           type: string
-          description: Chart of account code
+          description: Id of Chart of Account from the iFix master data.
+          example: d1e87330-4de0-4d15-8d92-d40bfa9b3ca4
         fromBillingPeriod:
           type: integer
           description: Start date of the billing period for which transaction is applicable
@@ -303,7 +189,7 @@ components:
         amountDetails:
           type: array
           items:
-            $ref: '#/components/schemas/AmountRequest'
+            $ref: '#/components/schemas/AmountDetails'
         auditDetails:
           $ref: '#/components/schemas/AuditDetails'
         attributes:
@@ -319,140 +205,11 @@ components:
           $ref: '#/components/schemas/RequestHeader'
         fiscalEvent:
           $ref: '#/components/schemas/FiscalEvent'
-      description: Fiscal event request along with request metadata
-    AmountDetails:
-      required:
-      - amount
-      - coa
-      type: object
-      properties:
-        id:
-          type: string
-          description: System generated UUID
-          example: 51c9c03c-1607-4dd5-9e0e-93bbf860f6f7
-        amount:
-          type: number
-          description: Transaction Amount
-          example: 10234.5
-        coaId:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: Id of Chart of Account from the iFix master data.
-          example: d1e87330-4de0-4d15-8d92-d40bfa9b3ca4
-        fromBillingPeriod:
-          type: integer
-          description: Start date of the billing period for which transaction is applicable
-          format: int64
-          example: 1622907239000
-        toBillingPeriod:
-          type: integer
-          description: Start date of the billing period for which transaction is applicable
-          format: int64
-          example: 1628177643000
-      description: Capture the transaction amount and chart of account corresponding
-        to the transaction amount
+      description: Fiscal event request along with request header
+    FiscalEventRequestValidated:
+      $ref: '#/components/schemas/FiscalEventRequest'
     FiscalEventMongoDB:
-      required:
-      - amountDetails
-      - eventType
-      - referenceId
-      - tenantId
-      - transactionTime
-      type: object
-      properties:
-        id:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: System generated UUID.
-          readOnly: true
-          example: fecbbf1d-d6e3-4f24-9935-02c33b9248e0
-        tenantId:
-          maxLength: 256
-          minLength: 2
-          type: string
-          description: Tenant Id
-          nullable: false
-          example: pb
-        sender:
-          maxLength: 256
-          minLength: 2
-          type: string
-          description: Client id of the registered source system(Get the client id
-            from the request header)
-          readOnly: true
-        receivers:
-          type: array
-          description: Client ids of the registered data receivers system
-          items:
-            maxItems: 100
-            type: string
-        eventType:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: "Captures the event type (eg- 1.a. DEMAND, 1.b. BILL, 2.a.\
-            \ RECEIPT, 2.b. PAYMENT, 2.c. INTER_TRANSFER, 2.d. INTRA_TRANSFER, 3.a.\
-            \ SANCTION, 3.b. APPROPRIATION, 3.c. ALLOCATION)"
-          nullable: false
-          example: Appropriation
-        eventTime:
-          type: integer
-          description: when the event occured at source system level
-          format: int64
-          example: 1628177497000
-        ingestionTime:
-          type: integer
-          description: when the event arrived in ifix
-          format: int64
-          nullable: false
-          readOnly: true
-          example: 1628177497000
-        referenceId:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: reference unique id(transaction id) of the caller system
-          example: 013e9c56-8207-4dac-9f4d-f1e20bd824e7
-        linkedEventId:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: If this is a follow up event then it will refer to the parent
-            event using this reference id.
-          nullable: true
-          example: 7d476bb0-bc9f-48e2-8ad4-5a4a36220779
-        linkedReferenceId:
-          maxLength: 64
-          minLength: 1
-          type: string
-          description: If this is a follow up event then it will refer to the parent
-            event in source system using this reference id.
-          nullable: true
-          example: 77f23efe-879d-407b-8f23-7b8dd5b2ecb1
-        amountDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/AmountDetails'
-        auditDetails:
-          $ref: '#/components/schemas/AuditDetails'
-        attributes:
-          type: object
-          description: Capture the extra information as a json
-      description: The normalized fiscal event object to be stored in the MongoDB
-    FiscalEventRequestNormalized:
-      required:
-      - fiscalEvent
-      - requestHeader
-      type: object
-      properties:
-        requestHeader:
-          $ref: '#/components/schemas/RequestHeader'
-        fiscalEvent:
-          $ref: '#/components/schemas/FiscalEventMongoDB'
-      description: The normalized fiscal event request with reference ids of master
-        data.
+      $ref: '#/components/schemas/FiscalEvent'
     AmountDetailsDeReferenced:
       required:
       - amount
@@ -668,7 +425,7 @@ components:
           description: Capture the extra information as a json
       description: This is the unbundled line item into individual record from a given
         fiscal event.
-    FiscalEventLineItemFlattened:
+    FiscalEventDruid:
       type: object
       properties:
         version:
@@ -908,8 +665,6 @@ components:
           example: 1
       description: This is the flattened structure of line item that will get persisted
         to Druid
-    FiscalEventDruid:
-      $ref: '#/components/schemas/FiscalEventLineItemFlattened'
     FiscalEventAggregated:
       type: object
       properties:
