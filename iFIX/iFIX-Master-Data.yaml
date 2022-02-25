@@ -258,6 +258,8 @@ components:
           description: Capture the object head code name
         auditDetails:
           $ref: '#/components/schemas/AuditDetails'
+        attributes:
+          type: object
       description: Captures the COA data as map
     GovernmentRequest:
       required:
