@@ -151,7 +151,7 @@ paths:
           schema:
             type: number
       responses:
-        '202':
+        '200':
           description: Successful response sorted by reverse chrnological order of creation
           content:
             '*/*':
@@ -274,7 +274,7 @@ components:
       properties:
         responseInfo:
           $ref: 'https://raw.githubusercontent.com/egovernments/DIGIT-OSS/master/core-services/docs/common-contract.yml#/components/schemas/ResponseHeader'
-        musterRolls:
+        contracts:
           type: array
           items:
             $ref: '#/components/schemas/Contract'
