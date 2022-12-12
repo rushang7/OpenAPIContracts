@@ -50,11 +50,13 @@ paths:
               $ref: '#/components/schemas/RequestInfoWrapper'
       parameters:
       - $ref: 'https://raw.githubusercontent.com/egovernments/DIGIT-OSS/master/core-services/docs/common-contract.yml#/components/parameters/tenantId'
-      - name: id
-        description: Id of the muster roll
+      - name: ids
+        description: Ids of the muster roll
         in: query
         schema:
-          type: string
+          type: array
+          items:
+            type: string
       - name: musterRollNumber
         description: (Custom-formatted) Muster roll number
         in: query
